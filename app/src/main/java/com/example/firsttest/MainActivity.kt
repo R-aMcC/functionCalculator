@@ -2,6 +2,9 @@ package com.example.firsttest
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import kotlin.math.acos
 import kotlin.math.cos
 import kotlin.math.round
@@ -11,16 +14,15 @@ import kotlin.math.*
 import kotlin.math.pow
 import android.widget.Button
 import android.widget.Toast
-
+import android.widget.LinearLayout
+import android.widget.Spinner
+import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val goButton = findViewById<Button>(R.id.goButton)
-        goButton.setOnClickListener{
-            Toast.makeText(this, "Hello world!", Toast.LENGTH_SHORT).show()
-        }
+
 
         var i = 1.0
         var a = 1.0
@@ -43,7 +45,8 @@ class MainActivity : AppCompatActivity() {
             rv /= 10000
             return(rv)
         }
-        fun quadEq(a:Double, b:Double, c:Double){
+        fun quadEq(a:Double, b:Double, c:Double): MutableList<Double>{
+            var xs:MutableList<Double> =  mutableListOf(1.0, 2.0, 3.0)
             if(a == 0.0){
                 println("\"A\" cannot be 0 in a quadratic equation. Please enter a new value not equal to 0")
             }else{
@@ -51,16 +54,14 @@ class MainActivity : AppCompatActivity() {
                 var x1 = (-b+ sqrt(dt))/(2*a)
                 var x2 = (-b- sqrt(dt))/(2*a)
                 if(dt<0){
-                    "There are no real roots to this equation. Here are the imaginary roots"
-                    println("x1= $x1")
-                    println("x2 = $x2")
+                   xs = mutableListOf(x1, x2)
                 }else{
                     rounds(x1)
                     rounds(x2)
-                    println("x1= $x1")
-                    println("x2 = $x2")
+                    xs = mutableListOf(x1, x2)
                 }
             }
+            return(xs)
         }
         fun cubicEq(a:Double, b:Double, c:Double, d:Double):MutableList<Double>{
             var xs:MutableList<Double> = mutableListOf(1.0, 2.0, 3.0)
@@ -166,6 +167,26 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        val goButton = findViewById<Button>(R.id.goButton)
+        goButton.setOnClickListener{
+            val xs = quadEq(1.0, 5.0, 6.0)
+            val x1 = xs[0]
+            val x2 = xs[1]
+            Toast.makeText(this, "The roots of this equation are $x1 and $x2", Toast.LENGTH_LONG).show()
+        }
+        val spinner = findViewById<Spinner>(R.id.degreeSpinner)
+        val degrees = listOf<String>("Second degree (x^2)", "Third degree (x^3)", "Fourth degree (x^4)")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, degrees)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
+        spinner.adapter= adapter
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selectedItem = parent.getItemAtPosition(position) as String
 
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+
+            }
+        }
     }
 }

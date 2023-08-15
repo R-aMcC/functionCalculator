@@ -177,12 +177,39 @@ class MainActivity : AppCompatActivity() {
         val spinner = findViewById<Spinner>(R.id.degreeSpinner)
         val degrees = listOf<String>("Second degree (x^2)", "Third degree (x^3)", "Fourth degree (x^4)")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, degrees)
+        val viewOption1 = findViewById<TextView>(R.id.textViewOption1)
+        val viewOption2 = findViewById<TextView>(R.id.textViewOption2)
+        val viewOption3 = findViewById<TextView>(R.id.textViewOption3)
+        fun changeView(selectedItem: String){
+            when(selectedItem) {
+                "Second degree (x^2)" -> {
+                    viewOption1.visibility = View.VISIBLE
+                    viewOption2.visibility = View.INVISIBLE
+                    viewOption3.visibility = View.INVISIBLE
+                }
+                "Third degree (x^3)" -> {
+                    viewOption1.visibility = View.INVISIBLE
+                    viewOption2.visibility = View.VISIBLE
+                    viewOption3.visibility = View.INVISIBLE
+
+                }
+                "Fourth degree (x^4)" -> {
+                    viewOption1.visibility = View.INVISIBLE
+                    viewOption2.visibility = View.INVISIBLE
+                    viewOption3.visibility = View.VISIBLE
+                }
+
+
+
+            }
+
+        }
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
         spinner.adapter= adapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 val selectedItem = parent.getItemAtPosition(position) as String
-
+                changeView(selectedItem)
             }
             override fun onNothingSelected(parent: AdapterView<*>) {
 

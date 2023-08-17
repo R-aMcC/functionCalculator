@@ -1,26 +1,18 @@
 package com.example.firsttest
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import kotlin.math.acos
-import kotlin.math.cos
-import kotlin.math.round
-import kotlin.math.sin
-import kotlin.math.sqrt
-import kotlin.math.*
-import kotlin.math.pow
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
-import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
-import java.lang.ArithmeticException
-
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import org.apache.commons.math3.complex.Complex
+import kotlin.math.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -44,6 +36,11 @@ class MainActivity : AppCompatActivity() {
         rv /= 10000
         return(rv)
     }
+    fun negativeRoot(x: Double): Complex {
+        return Complex(0.0, sqrt(abs(x)))
+    }
+
+
     fun quadEq(a:Double, b:Double, c:Double): MutableList<Double>{
         var xs:MutableList<Double> =  mutableListOf(1.0, 2.0, 3.0)
         if(a == 0.0){
@@ -66,53 +63,73 @@ class MainActivity : AppCompatActivity() {
     }
     fun cubicEq(a:Double, b:Double, c:Double, d:Double):MutableList<Double>{
         var xs:MutableList<Double> = mutableListOf(1.0, 2.0, 3.0)
-        if(a==0.0){
-            while(a==0.0){
-                println("In a cubic equation, \"A\" cannot be equal to 0. Please input another value not equal to 0")
-            }
-        }
         var f = ((3 * c / a) - ((b.pow(2)) / (a.pow(2)))) / 3
+        Log.d("Cubic", "f = $f")
         var g = ((2 * (b.pow(3)) / (a.pow(3))) - ((9 * b * c) / (a.pow(2))) + (27 * d / a)) / 27
+        Log.d("Cubic", "g = $g")
         var h = ((g.pow(2)) / 4) + ((f.pow(3)) / 27)
+        if(abs(h)<0.0000001){
+            h = 0.0
+        }
+        Log.d("Cubic", "h = $h")
+
         if(h>0){
-            var i = (((g.pow(2)) / 4) - h).pow(1 / 2)
-            var r = -(g / 2) + (h).pow(1 / 2)
+            var i = (((g.pow(2)) / 4) - h).pow(0.5)
+            Log.d("Cubic", "I = $i")
+            var r = -(g / 2) + (h).pow(0.5)
+            Log.d("Cubic", "R = $r")
             if(r>0){
-                s = -((-r).pow(1/3))
+                s = -((-r).pow((1.0/3.0)))
 
             }else{
-                s = r.pow(1/3)
+                s = r.pow((1.0/3.0))
             }
-            var t =  -(g / 2) - (h).pow(1/2)
+            Log.d("Cubic", " s = $s" )
+            var t =  -(g / 2) - (h).pow(0.5)
+            Log.d("Cubic", "t = $t")
             if(t>0){
-                u = -((-t).pow(1 / 3))
+                u = -((-t).pow((1.0/3.0)))
             }else{
-                u = t.pow(1/3)
+                u = t.pow((1.0/3.0))
             }
+
             var x1 = (s + u) - (b / (3 * a))
             x1 = rounds(x1)
             var x2 = -(s + u)/2 - (b / (3 * a)) + ((s - u) * (3.0.pow(0.5)) / 2)*(sqrt(-1.0))
             var x3 = -(s + u)/2 - (b / (3 * a)) - ((s - u) * (3.0.pow(0.5)) / 2)*(sqrt(-1.0))
             xs = mutableListOf(x1, x2, x3)
         }else if(f==0.0 && g==0.0 && h==0.0){
-            var x1 = ((d/a).pow(1 / 3))*(-1)
-            var x2 = ((d/a).pow(1 / 3))*(-1)
-            var x3 = ((d/a).pow(1 / 3))*(-1)
+            var x1 = ((d/a).pow((1.0 / 3.0)))*(-1)
+            var x2 = ((d/a).pow((1.0 / 3.0)))*(-1)
+            var x3 = ((d/a).pow((1.0 / 3.0)))*(-1)
             xs = mutableListOf(x1, x2, x3)
 
         }else if( h<=0){
-            var i = (((g.pow(2))/4) - h).pow(1/2)
-            var j = (i).pow(1/3)
-            var testt = (-(g / (2 * i)))
-            Log.d("acos entry", "Value : $testt", )
+
+            var i = (((g*g)/4) - h).pow(0.5)
+            var j = i.pow(1.0/3.0)
             var k = acos((-(g / (2 * i))))
+            Log.d("CUBIC", "k = $k")
             var l = j*(-1)
+            Log.d("CUBIC", "l = $l")
             var m = cos(k/3)
+            Log.d("CUBIC", "m = $m")
             var n = sqrt(3.0)* sin(k/3)
+            Log.d("CUBIC", "n = $n")
             var p = (b / (3 * a)) * (-1)
+            Log.d("CUBIC", "p = $p")
             var x1 = (2*j)*cos(k/3)-(b/(3*a))
             var x2 = l * (m + n) + p
             var x3 = l * (m - n) + p
+            if(abs(x3)<0.00000000001){
+                x3 = 0.0
+            }
+            if(abs(x2) < 0.00000001){
+                x2 = 0.0
+            }
+            if(abs(x1) < 0.0000001){
+                x1 = 0.0
+            }
             xs = mutableListOf(x1, x2, x3)
         }
         return xs

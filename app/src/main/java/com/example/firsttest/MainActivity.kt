@@ -16,6 +16,7 @@ import kotlin.math.*
 
 
 class MainActivity : AppCompatActivity() {
+    // Defines a bunch of variables used throughout the code
     var i = 1.0
     var a = 1.0
     var b =1.0
@@ -29,7 +30,9 @@ class MainActivity : AppCompatActivity() {
     var u = 1.0
     var zx = 1.0
     var True = false
+
     fun rounds(zx: Double): Double{
+        //rounds a number to 4 decimals
         var rv = zx * 10000
         rv = round(rv)
         rv = rv.toDouble()
@@ -38,41 +41,40 @@ class MainActivity : AppCompatActivity() {
     }
     fun negativeRoot(x: Double): Complex {
         return Complex(0.0, sqrt(abs(x)))
+        //calculates a negative root.
     }
 
 
     fun quadEq(a:Double, b:Double, c:Double): MutableList<Double>{
-        var xs:MutableList<Double> =  mutableListOf(1.0, 2.0, 3.0)
-        if(a == 0.0){
-            println("\"A\" cannot be 0 in a quadratic equation. Please enter a new value not equal to 0")
-        }else{
-            var dt = (b.pow(2) - 4*a*c)
-            var x1 = (-b+ sqrt(dt))/(2*a)
-            var x2 = (-b- sqrt(dt))/(2*a)
-            Log.d("Quadratic function", "$x1, $x2")
-            if(dt<0){
-                xs = mutableListOf(x1, x2)
+        // runs the quadratic function.
 
-            }else{
-                rounds(x1)
-                rounds(x2)
-                xs = mutableListOf(x1, x2)
-            }
+
+        val dt = (b.pow(2) - 4*a*c)
+        val x1 = (-b+ sqrt(dt))/(2*a)
+        val x2 = (-b- sqrt(dt))/(2*a)
+        Log.d("Quadratic function", "$x1, $x2")
+        if(dt>0){
+            rounds(x1)
+            rounds(x2)
         }
+        var xs = mutableListOf(x1, x2)
+
         return(xs)
     }
     fun cubicEq(a:Double, b:Double, c:Double, d:Double):MutableList<Double>{
+        // runs the cubic equation
         var xs:MutableList<Double> = mutableListOf(1.0, 2.0, 3.0)
         var f = ((3 * c / a) - ((b.pow(2)) / (a.pow(2)))) / 3
         Log.d("Cubic", "f = $f")
         var g = ((2 * (b.pow(3)) / (a.pow(3))) - ((9 * b * c) / (a.pow(2))) + (27 * d / a)) / 27
         Log.d("Cubic", "g = $g")
         var h = ((g.pow(2)) / 4) + ((f.pow(3)) / 27)
+        //numbers are often x.xxe-10+, so this makes them 0 (because of the way doubles work)
         if(abs(h)<0.0000001){
             h = 0.0
         }
         Log.d("Cubic", "h = $h")
-
+        // all the different conditions with their different formulas
         if(h>0){
             var i = (((g.pow(2)) / 4) - h).pow(0.5)
             Log.d("Cubic", "I = $i")
@@ -121,6 +123,7 @@ class MainActivity : AppCompatActivity() {
             var x1 = (2*j)*cos(k/3)-(b/(3*a))
             var x2 = l * (m + n) + p
             var x3 = l * (m - n) + p
+            //again makes sure 0s are actually 0
             if(abs(x3)<0.00000000001){
                 x3 = 0.0
             }
@@ -135,11 +138,8 @@ class MainActivity : AppCompatActivity() {
         return xs
     }
     fun quartEq(aa:Double, bb:Double, cc:Double, dd:Double, ee:Double):List<Double>{
-        if(a==0.0){
-            while(a==0.0){
-                println("\"A\" cannot be 0 in a quartic equation. Please enter another value that isn't 0")
-            }
-        }
+        // runs the quartic equation
+        //simplifies the variables
         b = bb/aa
         c = cc/aa
         d = dd/aa
@@ -152,10 +152,12 @@ class MainActivity : AppCompatActivity() {
         var i = f/2
         var j = ((f.pow(2)-4*h)/16)
         var k = -(g.pow(2)/64)
+        //converted the quartic into a cubic, runs the equation to get some answers
         var Xs = cubicEq(1.0, i, j, k)
         var y1:Double = Xs[0]
         var y2:Double = Xs[1]
         var y3:Double = Xs[2]
+        // conditions for the answers
         if(y1!=0.0 && y2!=0.0){
             p = sqrt(y1)
             q = sqrt(y2)
@@ -188,7 +190,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        //creates all of the various items used in the UI
         val spinner = findViewById<Spinner>(R.id.degreeSpinner)
         val degrees = listOf<String>("Second degree (x^2)", "Third degree (x^3)", "Fourth degree (x^4)")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, degrees)
@@ -209,6 +211,7 @@ class MainActivity : AppCompatActivity() {
         val inputText12 = findViewById<EditText>(R.id.inputEditText12)
         fun changeView(selectedItem: String){
             when(selectedItem) {
+                //Lets the user select the equation and toggles the visibility of items to make.
                 "Second degree (x^2)" -> {
                     viewOption1.visibility = View.VISIBLE
                     viewOption2.visibility = View.GONE
@@ -271,6 +274,7 @@ class MainActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
         spinner.adapter= adapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            //makes the selection work and run the equation once the buttons is pressed
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 val selectedItem = parent.getItemAtPosition(position) as String
                 changeView(selectedItem)
